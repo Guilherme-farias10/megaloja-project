@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MegaLoja Online - ClickCollect</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <nav id="app-menu" class="app-navbar" style="display: none;">
+        <div class="menu-header">
+            <img src="assets/images/logo.png" alt="MegaLoja" class="menu-logo">
+        </div>
+
+        <ul class="menu-links">
+            <li class="menu-item active" onclick="handleMenuClick(this, 'screen-stores')">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                <span>Início</span>
+            </li>
+            
+            <li class="menu-item" onclick="handleMenuClick(this, 'screen-orders')">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="22 12 16 12 14 15 10 15 8 12 2 12"></polyline>
+                    <path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path>
+                </svg>
+                <span>Pedidos</span>
+            </li>
+
+            <li class="menu-item" onclick="handleMenuClick(this, 'screen-notifications')">
+                <div class="icon-wrapper">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                    </svg>
+                    <span class="menu-badge"></span>
+                </div>
+                <span>Notificações</span>
+            </li>
+
+            <li class="menu-item" onclick="handleMenuClick(this, 'screen-profile-placeholder')">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                <span>Perfil</span>
+            </li>
+        </ul>
+    </nav>
+
+    <main id="app-container">
+
+        <section id="screen-login" class="screen-section active-screen">
+            <div class="login-container">
+                <img src="assets/images/logo.png" alt="MegaLoja Online" class="app-logo">
+                <h1 class="welcome-title">Bem-vindo!</h1>
+                <p class="welcome-subtitle">Faça login para continuar</p>
+                
+                <form class="login-form" onsubmit="handleLogin(event)">
+                    <div class="input-group">
+                        <span class="input-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
+                        </span>
+                        <input type="email" placeholder="E-mail" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <span class="input-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                            </svg>
+                        </span>
+                        <input type="password" placeholder="Senha" required>
+                        <span onclick="togglePassword(this)" style="cursor: pointer; color: #9CA3AF; margin-left: 10px; display: flex;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        </span>
+                    </div>
+                    
+                    <div class="forgot-password">
+                        <a href="#" onclick="event.preventDefault(); navigateTo('screen-forgot-password');">Esqueceu a senha?</a>
+                    </div>
+                    
+                    <button type="submit" class="primary-btn">Entrar</button>
+                </form>
+                
+                <p class="register-link">Não tem conta? <a href="#" onclick="event.preventDefault(); navigateTo('screen-register');">Cadastre-se</a></p>
+
+                <div class="employee-toggle">
+                    <div class="divider"></div>
+                    <a href="#" onclick="event.preventDefault(); navigateTo('screen-employee-login');">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                        </svg>
+                        Acesso do funcionário
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section id="screen-forgot-password" class="screen-section">
+            <div class="login-container">
+                <img src="assets/images/logo.png" alt="MegaLoja Online" class="app-logo">
+                <h1 class="welcome-title">Recuperar senha</h1>
+                <p class="welcome-subtitle">Digite seu e-mail para receber as instruções</p>
+                
+                <form class="login-form" onsubmit="event.preventDefault(); navigateTo('screen-forgot-password-success');">
+                    <div class="input-group">
+                        <span class="input-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
+                        </span>
+                        <input type="email" placeholder="E-mail cadastrado" required>
+                    </div>
+                    <button type="submit" class="primary-btn">Enviar instruções</button>
+                </form>
+
+                <div class="employee-toggle" style="margin-top: 20px;">
+                    <a href="#" onclick="event.preventDefault(); navigateTo('screen-login');">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="19" y1="12" x2="5" y2="12"></line>
+                            <polyline points="12 19 5 12 12 5"></polyline>
+                        </svg>
+                        Voltar para o login
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- TELA: SUCESSO RECUPERAÇÃO -->
+        <section id="screen-forgot-password-success" class="screen-section">
+            <div class="login-container">
+                <div class="success-icon-box">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                </div>
+                <h1 class="welcome-title">E-mail enviado!</h1>
+                <p class="welcome-subtitle" style="text-align: center; line-height: 1.5;">
+                    Por favor, siga o passo a passo de mudança da senha que foi enviada para o seu e-mail.
+                </p>
+                <button class="primary-btn" onclick="navigateTo('screen-login')">Voltar para o Login</button>
+            </div>
+        </section>
+
+        <section id="screen-register" class="screen-section">
+            <div class="login-container">
+                <img src="assets/images/logo.png" alt="MegaLoja Online" class="app-logo">
+                <h1 class="welcome-title">Criar Conta</h1>
+                <p class="welcome-subtitle">Preencha os dados abaixo para se cadastrar</p>
+                
+                <form class="login-form" onsubmit="handleRegister(event)">
+                    <div class="input-group">
+                        <span class="input-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        </span>
+                        <input type="text" placeholder="Nome" required>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        </span>
+                        <input type="text" placeholder="Sobrenome" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <span class="input-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                        </span>
+                        <input type="email" placeholder="E-mail" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <span class="input-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                        </span>
+                        <input type="password" id="reg-password" placeholder="Senha" required minlength="6">
+                        <span onclick="togglePassword(this)" style="cursor: pointer; color: #9CA3AF; margin-left: 10px; display: flex;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        </span>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                        </span>
+                        <input type="password" id="reg-confirm" placeholder="Confirmar Senha" required minlength="6">
+                        <span onclick="togglePassword(this)" style="cursor: pointer; color: #9CA3AF; margin-left: 10px; display: flex;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        </span>
+                    </div>
+
+                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 15px; border: 2px solid #374151; border-radius: 8px; background-color: #1F2937; margin-top: 5px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <input type="checkbox" id="human-verify" required style="width: 20px; height: 20px; accent-color: #6366F1; cursor: pointer;">
+                            <label for="human-verify" style="font-size: 14px; color: #F9FAFB; cursor: pointer; user-select: none;">Não sou um robô</label>
+                        </div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                    </div>
+                    <button type="submit" class="primary-btn">Criar conta</button>
+                </form>
+                <p class="register-link">Já tem uma conta? <a href="#" onclick="event.preventDefault(); navigateTo('screen-login');">Faça login</a></p>
+            </div>
+        </section>
+
+        <!-- TELA: SUCESSO CADASTRO -->
+        <section id="screen-register-success" class="screen-section">
+            <div class="login-container">
+                <div class="success-icon-box">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                </div>
+                <h1 class="welcome-title">Conta criada com sucesso!</h1>
+                <p class="welcome-subtitle" style="text-align: center; line-height: 1.5;">
+                    Seja bem-vindo(a)! Seu cadastro foi realizado e agora você já pode acessar a plataforma.
+                </p>
+                <button class="primary-btn" onclick="navigateTo('screen-login')">Fazer Login</button>
+            </div>
+        </section>
+
+        <section id="screen-stores" class="screen-section">
+            <div class="stores-container">
+                <div class="back-btn-container">
+                    <a href="#" onclick="event.preventDefault(); navigateTo('screen-login');">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="19" y1="12" x2="5" y2="12"></line>
+                            <polyline points="12 19 5 12 12 5"></polyline>
+                        </svg>
+                        Voltar para o Login
+                    </a>
+                </div>
+
+                <h1 class="page-title">Escolha uma Loja</h1>
+                <p class="page-subtitle">Selecione onde você deseja retirar o seu pedido</p>
+
+                <div class="search-box">
+                    <div class="input-group">
+                        <span class="input-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                        </span>
+                        <input type="text" placeholder="Digite o nome da loja ou o endereço">
+                    </div>
+                    <button class="primary-btn search-btn" onclick="handleStoreSearch()">Buscar Lojas</button>
+                </div>
+
+                <div class="stores-grid">
+                    
+                    <div class="store-card">
+                        <div class="store-info">
+                            <span class="store-badge open">Aberto</span>
+                            <h2 class="store-name">MegaLoja - Centro</h2>
+                            <p class="store-address">Av. Principal, 1050 - Centro Histórico</p>
+                            <p class="store-distance">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="10" r="3"></circle>
+                                    <path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 7 8 11.7z"></path>
+                                </svg>
+                                1.2 km de distância
+                            </p>
+                        </div>
+                        <button class="primary-btn select-store-btn" onclick="selectStore('Centro')">Retirar nesta Loja</button>
+                    </div>
+
+                    <div class="store-card">
+                        <div class="store-info">
+                            <span class="store-badge open">Aberto</span>
+                            <h2 class="store-name">MegaLoja - Shopping Mall</h2>
+                            <p class="store-address">Av. das Nações, 4500 - Shopping Premium, Piso L2</p>
+                            <p class="store-distance">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="10" r="3"></circle>
+                                    <path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 7 8 11.7z"></path>
+                                </svg>
+                                4.5 km de distância
+                            </p>
+                        </div>
+                        <button class="primary-btn select-store-btn" onclick="selectStore('Shopping Mall')">Retirar nesta Loja</button>
+                    </div>
+
+                    <div class="store-card">
+                        <div class="store-info">
+                            <span class="store-badge closed">Fecha em breve</span>
+                            <h2 class="store-name">MegaLoja - Zona Sul</h2>
+                            <p class="store-address">Rua das Flores, 210 - Bairro Ipanema</p>
+                            <p class="store-distance">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="10" r="3"></circle>
+                                    <path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 7 8 11.7z"></path>
+                                </svg>
+                                8.7 km de distância
+                            </p>
+                        </div>
+                        <button class="primary-btn select-store-btn" onclick="selectStore('Zona Sul')">Retirar nesta Loja</button>
+                    </div>
+
+                    <div class="store-card">
+                        <div class="store-info">
+                            <span class="store-badge open">Aberto</span>
+                            <h2 class="store-name">MegaLoja - Zona Norte</h2>
+                            <p class="store-address">Av. Brasil, 3200 - Bairro Industrial</p>
+                            <p class="store-distance">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="10" r="3"></circle>
+                                    <path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 7 8 11.7z"></path>
+                                </svg>
+                                12.4 km de distância
+                            </p>
+                        </div>
+                        <button class="primary-btn select-store-btn" onclick="selectStore('Zona Norte')">Retirar nesta Loja</button>
+                    </div>
+
+                    <div class="store-card">
+                        <div class="store-info">
+                            <span class="store-badge closed">Fecha em breve</span>
+                            <h2 class="store-name">MegaLoja - Express Barra</h2>
+                            <p class="store-address">Rua da Praia, 45 - Calçadão Central</p>
+                            <p class="store-distance">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="10" r="3"></circle>
+                                    <path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 7 8 11.7z"></path>
+                                </svg>
+                                15.1 km de distância
+                            </p>
+                        </div>
+                        <button class="primary-btn select-store-btn" onclick="selectStore('Express Barra')">Retirar nesta Loja</button>
+                    </div>
+
+                    <div class="store-card">
+                        <div class="store-info">
+                            <span class="store-badge open">Aberto</span>
+                            <h2 class="store-name">MegaLoja - Terminal Oeste</h2>
+                            <p class="store-address">Av. Oeste, 880 - Junto ao Terminal Rodoviário</p>
+                            <p class="store-distance">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="10" r="3"></circle>
+                                    <path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 7 8 11.7z"></path>
+                                </svg>
+                                19.3 km de distância
+                            </p>
+                        </div>
+                        <button class="primary-btn select-store-btn" onclick="selectStore('Terminal Oeste')">Retirar nesta Loja</button>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <section id="screen-stock" class="screen-section">
+            <div class="stock-container">
+                
+                <div class="back-btn-container" style="margin-bottom: 15px;">
+                    <a href="#" class="back-link" onclick="event.preventDefault(); navigateTo('screen-stores');">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                        Voltar para Seleção de Lojas
+                    </a>
+                </div>
+
+                <h2 id="stock-screen-title" class="screen-title">Estoque - Carregando...</h2>
+
+                <div class="search-box" style="margin-bottom: 25px;">
+                    <div class="input-group">
+                        <span class="input-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        </span>
+                        <input type="text" placeholder="Digite o nome do produto..." oninput="handleProductSearch()">
+                    </div>
+                </div>
+
+                <div class="products-grid" id="products-grid">
+                    
+                    <div class="product-card" data-stores="Centro, Shopping Mall, Zona Sul, Zona Norte, Express Barra, Terminal Oeste">
+                        <div class="product-info-left">
+                            <div class="product-icon-wrapper">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                            </div>
+                            <div class="product-details">
+                                <span class="product-name">Monitor Gamer 24" LED FHD</span>
+                                <span class="product-price">R$ 899,90</span>
+                            </div>
+                        </div>
+                        <button class="add-product-btn" onclick="addToOrder('Monitor Gamer 24\'\' LED FHD')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        </button>
+                    </div>
+
+                    <div class="product-card" data-stores="Centro, Shopping Mall">
+                        <div class="product-info-left">
+                            <div class="product-icon-wrapper">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line></svg>
+                            </div>
+                            <div class="product-details">
+                                <span class="product-name">Cafeteira Elétrica Inox</span>
+                                <span class="product-price">R$ 189,00</span>
+                            </div>
+                        </div>
+                        <button class="add-product-btn" onclick="addToOrder('Cafeteira Elétrica Inox')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        </button>
+                    </div>
+
+                    <div class="product-card" data-stores="Centro, Shopping Mall, Zona Sul, Zona Norte">
+                        <div class="product-info-left">
+                            <div class="product-icon-wrapper">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+                            </div>
+                            <div class="product-details">
+                                <span class="product-name">Smartphone 128GB Ultra</span>
+                                <span class="product-price">R$ 2.499,00</span>
+                            </div>
+                        </div>
+                        <button class="add-product-btn" onclick="addToOrder('Smartphone 128GB Ultra')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        </button>
+                    </div>
+
+                    <div class="product-card" data-stores="Zona Sul, Zona Norte, Express Barra">
+                        <div class="product-info-left">
+                            <div class="product-icon-wrapper">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"></path><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path></svg>
+                            </div>
+                            <div class="product-details">
+                                <span class="product-name">Fone Bluetooth Noise Cancelling</span>
+                                <span class="product-price">R$ 349,90</span>
+                            </div>
+                        </div>
+                        <button class="add-product-btn" onclick="addToOrder('Fone Bluetooth Noise Cancelling')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        </button>
+                    </div>
+
+                    <div class="product-card" data-stores="Centro, Shopping Mall, Terminal Oeste">
+                        <div class="product-info-left">
+                            <div class="product-icon-wrapper">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><line x1="6" y1="8" x2="6" y2="8"></line><line x1="10" y1="8" x2="10" y2="8"></line><line x1="14" y1="8" x2="14" y2="8"></line><line x1="18" y1="8" x2="18" y2="8"></line><line x1="6" y1="12" x2="18" y2="12"></line><line x1="6" y1="16" x2="18" y2="16"></line></svg>
+                            </div>
+                            <div class="product-details">
+                                <span class="product-name">Teclado Mecânico RGB</span>
+                                <span class="product-price">R$ 279,00</span>
+                            </div>
+                        </div>
+                        <button class="add-product-btn" onclick="addToOrder('Teclado Mecânico RGB')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        </button>
+                    </div>
+
+                    <div class="product-card" data-stores="Centro, Shopping Mall">
+                        <div class="product-info-left">
+                            <div class="product-icon-wrapper">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="14" rx="2" ry="2"></rect><line x1="2" y1="18" x2="22" y2="18"></line></svg>
+                            </div>
+                            <div class="product-details">
+                                <span class="product-name">Notebook Intel i5 16GB RAM</span>
+                                <span class="product-price">R$ 4.199,00</span>
+                            </div>
+                        </div>
+                        <button class="add-product-btn" onclick="addToOrder('Notebook Intel i5 16GB RAM')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        </button>
+                    </div>
+
+                    <div class="product-card" data-stores="Zona Sul, Zona Norte, Terminal Oeste">
+                        <div class="product-info-left">
+                            <div class="product-icon-wrapper">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h12l2 4H4l2-4z"></path><path d="M4 6v13a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6H4z"></path><line x1="12" y1="11" x2="12" y2="16"></line></svg>
+                            </div>
+                            <div class="product-details">
+                                <span class="product-name">Liquidificador Turbo 1000W</span>
+                                <span class="product-price">R$ 149,90</span>
+                            </div>
+                        </div>
+                        <button class="add-product-btn" onclick="addToOrder('Liquidificador Turbo 1000W')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        </button>
+                    </div>
+
+                    <div class="product-card" data-stores="Centro, Shopping Mall, Zona Norte">
+                        <div class="product-info-left">
+                            <div class="product-icon-wrapper">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                            </div>
+                            <div class="product-details">
+                                <span class="product-name">Smart TV 4K 50" Crystal</span>
+                                <span class="product-price">R$ 2.199,00</span>
+                            </div>
+                        </div>
+                        <button class="add-product-btn" onclick="addToOrder('Smart TV 4K 50\'\' Crystal')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        </button>
+                    </div>
+
+                    <div class="product-card" data-stores="Centro, Express Barra, Terminal Oeste, Zona Sul">
+                    <div class="product-info-left">
+                        <div class="product-icon-wrapper">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><path d="M12 7v6M9 10h6"></path></svg>
+                        </div>
+                        <div class="product-details">
+                            <span class="product-name">Carregador Rápido GaN 65W</span> 
+                            <span class="product-price">R$ 129,00</span>
+                        </div>
+                    </div>
+                    <button class="add-product-btn" onclick="addToOrder('Carregador Rápido GaN 65W')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    </button>
+                </div>
+
+                    <div class="product-card" data-stores="Shopping Mall, Terminal Oeste">
+                        <div class="product-info-left">
+                            <div class="product-icon-wrapper">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="12" x2="10" y2="12"></line><line x1="8" y1="10" x2="8" y2="14"></line><line x1="15" y1="13" x2="15.01" y2="13"></line><line x1="18" y1="11" x2="18.01" y2="11"></line><rect x="2" y="6" width="20" height="12" rx="3"></rect></svg>
+                            </div>
+                            <div class="product-details">
+                                <span class="product-name">Console PlayStation 5 Slim</span>
+                                <span class="product-price">R$ 3.799,00</span>
+                            </div>
+                        </div>
+                        <button class="add-product-btn" onclick="addToOrder('Console PlayStation 5 Slim')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        </button>
+                    </div>
+
+                </div>
+
+                <div class="stock-footer-actions">
+                    <button class="secondary-btn footer-action-btn" onclick="navigateTo('screen-cart')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                        Ver Meu Pedido
+                    </button>
+                    
+                    <button class="primary-btn footer-action-btn" onclick="navigateTo('screen-checkout-placeholder')">
+                        Realizar Pedido
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                    </button>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- TELA DO CARRINHO DE COMPRAS -->
+        <section id="screen-cart" class="screen-section">
+            <div class="stock-container">
+                <h2 class="screen-title">Meu Pedido</h2>
+                <p style="color: #9CA3AF; margin-bottom: 20px;">Confira os itens e as lojas de retirada.</p>
+                
+                <!-- Lista onde o JS vai injetar os produtos -->
+                <div id="cart-items-list" style="display: flex; flex-direction: column; gap: 12px;"></div>
+                
+                <!-- Mensagem de carrinho vazio -->
+                <div id="cart-empty-message" style="text-align: center; color: #9CA3AF; padding: 30px 0; display: none;">
+                    Seu carrinho está vazio.
+                </div>
+
+                <div id="cart-total-container" style="display: none; justify-content: space-between; align-items: center; background: #374151; padding: 15px 20px; border-radius: 8px; margin-top: 15px; margin-bottom: 20px; border: 1px solid #4B5563;">
+                    <span style="color: #F3F4F6; font-size: 1.1rem; font-weight: 600;">Total do Pedido:</span>
+                    <span id="cart-total-value" style="color: #10B981; font-size: 1.3rem; font-weight: bold;">R$ 0,00</span>
+                </div>
+
+                <div class="stock-footer-actions">
+                    <button class="secondary-btn footer-action-btn" onclick="navigateTo('screen-stock')">
+                        Continuar Comprando
+                    </button>
+                    <button class="primary-btn footer-action-btn" onclick="navigateTo('screen-checkout-placeholder')">
+                        Realizar Pedido
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section id="screen-checkout" class="screen-section">
+            <h1>TELA 4 CLIENTE - FINALIZAR PEDIDO</h1>
+            <p>Resumo do pedido e pagamento.</p>
+            <button class="primary-btn" onclick="navigateTo('screen-orders')">Confirmar Pedido</button>
+            <button class="primary-btn" onclick="navigateTo('screen-inventory')" style="background-color: #6B7280; margin-top: 10px;">Voltar</button>
+        </section>
+
+        <section id="screen-orders" class="screen-section">
+            <h1>TELA 5 CLIENTE - MEUS PEDIDOS</h1>
+            <p>Status de entrega e notificações para o cliente.</p>
+            <button class="primary-btn" onclick="navigateTo('screen-login')" style="background-color: #6B7280;">Voltar ao Início</button>
+        </section>
+
+        <section id="screen-notifications" class="screen-section">
+            <div class="notifications-container">
+                
+                <div class="notifications-header">
+                    <h2>Notificações</h2>
+                    <button class="clear-all-btn" onclick="markAllNotificationsAsRead()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        Marcar todas como lidas
+                    </button>
+                </div>
+
+                <div class="notifications-list" id="notifications-list">
+                    
+                    <div class="notification-card unread" id="notif-1">
+                        <div class="notification-icon status-ready">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                        </div>
+                        <div class="notification-content">
+                            <div class="notification-title-row">
+                                <span class="notification-title">Pedido Pronto para Retirada!</span>
+                                <span class="notification-time">Hoje, 14:20</span>
+                            </div>
+                            <p class="notification-body">O seu pedido <strong>#BR-84920</strong> já foi separado e está aguardando você na filial Gonzaga. Não esqueça de levar seu documento!</p>
+                            <div class="notification-actions">
+                                <button class="notif-action-btn primary" onclick="navigateTo('screen-orders')">Ver Pedido</button>
+                                <button class="notif-action-btn secondary" onclick="toggleReadState('notif-1')">Marcar como lida</button>
+                            </div>
+                        </div>
+                        <span class="unread-dot"></span>
+                    </div>
+
+                    <div class="notification-card unread" id="notif-2">
+                        <div class="notification-icon status-promo">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                        </div>
+                        <div class="notification-content">
+                            <div class="notification-title-row">
+                                <span class="notification-title">Cupom exclusivo para você</span>
+                                <span class="notification-time">Ontem, 18:05</span>
+                            </div>
+                            <p class="notification-body">Use o código <strong>QUERO10</strong> na sua próxima retirada e garanta 10% de desconto extra em todo o departamento de eletrônicos.</p>
+                            <div class="notification-actions">
+                                <button class="notif-action-btn secondary" onclick="toggleReadState('notif-2')">Marcar como lida</button>
+                            </div>
+                        </div>
+                        <span class="unread-dot"></span>
+                    </div>
+
+                    <div class="notification-card" id="notif-3">
+                        <div class="notification-icon status-info">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                        </div>
+                        <div class="notification-content">
+                            <div class="notification-title-row">
+                                <span class="notification-title">Cadastro atualizado</span>
+                                <span class="notification-time">30 de Mai, 10:15</span>
+                            </div>
+                            <p class="notification-body">As suas preferências de comunicação e dados de perfil foram atualizados com sucesso no sistema.</p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="notifications-empty" id="notifications-empty" style="display: none;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                    <h3>Tudo limpo por aqui!</h3>
+                    <p>Você não possui nenhuma notificação nova ou pendente no momento.</p>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="screen-profile-placeholder" class="screen-section">
+            <div class="profile-container">
+                <div class="profile-header-card">
+                    <div class="profile-avatar">UT</div>
+                    <h2 class="profile-user-name">Usuário de Testes</h2>
+                    <p class="profile-user-email">usuario.teste@megaloja.com.br</p>
+                    <span class="profile-badge-status">Cliente VIP</span>
+                </div>
+
+                <div class="profile-section-card">
+                    <h3 class="profile-card-title">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        Dados Pessoais
+                    </h3>
+                    <div class="profile-data-grid">
+                        <div class="data-item">
+                            <label>Nome Completo</label>
+                            <p>Usuário de Testes da Silva</p>
+                        </div>
+                        <div class="data-item">
+                            <label>CPF</label>
+                            <p>123.456.789-00</p>
+                        </div>
+                        <div class="data-item">
+                            <label>Telefone</label>
+                            <p>(51) 99999-8888</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="profile-section-card">
+                    <h3 class="profile-card-title">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                        Segurança e Preferências
+                    </h3>
+                    <div class="profile-actions-list">
+                        <button class="profile-action-row" onclick="alert('Funcionalidade a ser concluída!')">
+                            <span>Alterar Senha de Acesso</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                        </button>
+                        <button class="profile-action-row" onclick="alert('Funcionalidade a ser concluída!')">
+                            <span>Endereços de Faturamento Salvos</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <button class="primary-btn logout-btn" onclick="navigateTo('screen-login')">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                    Sair da Conta
+                </button>
+            </div>
+        </section>
+
+        <section id="screen-employee-login" class="screen-section">
+            <div class="login-container">
+                <img src="assets/images/logo.png" alt="MegaLoja Online" class="app-logo">
+                <h1 class="welcome-title">Acesso do funcionário</h1>
+                <p class="welcome-subtitle">Área restrita à equipe</p>
+                
+                <form class="login-form" onsubmit="event.preventDefault(); navigateTo('screen-employee-2');">
+                    <div class="input-group">
+                        <span class="input-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        </span>
+                        <input type="text" placeholder="Matrícula ou E-mail" required>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                        </span>
+                        <input type="password" placeholder="Senha" required>
+                        <span onclick="togglePassword(this)" style="cursor: pointer; color: #9CA3AF; margin-left: 10px; display: flex;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        </span>
+                    </div>
+                    <button type="submit" class="primary-btn" style="background-color: #1F2937;">Entrar no Sistema</button>
+                </form>
+                <div class="employee-toggle">
+                    <div class="divider"></div>
+                    <a href="#" onclick="event.preventDefault(); navigateTo('screen-login');">Voltar para o cliente</a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- MODAL DE ERRO -->
+    <div id="error-modal" class="error-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+            </div>
+            <h2 class="modal-title">Erro na validação</h2>
+            <p id="error-message" class="modal-message"></p>
+            <button onclick="closeModal()" class="modal-btn">OK</button>
+        </div>
+    </div>
+
+    <div id="success-modal" class="error-modal">
+        <div class="modal-content" style="text-align: center; max-width: 350px;">
+            <div style="display: flex; justify-content: center; margin-bottom: 15px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+            </div>
+            <h2 style="color: #F3F4F6; font-size: 1.3rem; margin-bottom: 10px;">Produto Adicionado!</h2>
+            <p id="success-message" style="color: #9CA3AF; font-size: 0.95rem; line-height: 1.5; margin-bottom: 24px;"></p>
+            <button onclick="closeSuccessModal()" class="primary-btn" style="background-color: #10B981; margin: 0;">OK, Continuar</button>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
