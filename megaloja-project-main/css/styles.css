@@ -261,13 +261,98 @@ body {
     text-align: center;
 }
 
-.search-box {
+/* --- AJUSTE DA BARRA DE PESQUISA EXPANDIDA --- */
+/* --- BARRA DE PESQUISA EXPANDIDA COM LUPA --- */
+/* ===================================================
+   COMPONENTE DE BUSCA UNIVERSAL (PADRÃO PARA TODO O APP)
+   =================================================== */
+/* ===================================================
+   COMPONENTE DE BUSCA UNIVERSAL (PADRÃO ALINHADO 100%)
+   =================================================== */
+.search-container-universal {
+    position: relative;
     display: flex;
-    flex-direction: column;
-    gap: 12px;
+    align-items: center; /* ALINHAMENTO VERTICAL PERFEITO DA LUPA */
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-bottom: 25px;
+    box-sizing: border-box;
+}
+
+.search-input-universal {
     width: 100%;
-    align-items: center;
-    margin-bottom: 32px;
+    height: 48px;
+    box-sizing: border-box;
+    padding: 12px 16px 12px 48px; /* Abre espaço na esquerda para a lupa */
+    background-color: #1F2937;
+    border: 1px solid #374151;
+    border-radius: 10px;
+    color: #F3F4F6;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* Ícone posicionado milimetricamente no centro vertical da barra */
+.search-icon-universal {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%); /* Trava o ícone no meio exato da altura */
+    pointer-events: none;
+    color: #9CA3AF;
+    display: block;
+}
+
+/* Placeholder discreto */
+.search-input-universal::placeholder {
+    color: #6B7280;
+}
+
+/* Efeito luminoso e mudança de fundo ao clicar na barra */
+.search-input-universal:focus {
+    border-color: #6366F1;
+    background-color: #111827; /* Escurece sutilmente o fundo */
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+/* A lupa muda de cor para acompanhar o foco da digitação */
+.search-input-universal:focus + .search-icon-universal {
+    color: #6366F1;
+}
+
+.search-input-universal,
+.stock-search-input {
+    width: 100%;
+    height: 48px;
+    box-sizing: border-box;
+    padding: 12px 16px 12px 48px;
+    background-color: #1F2937 !important; /* Fundo escuro padrão */
+    border: 1px solid #374151 !important; /* A borda cinza escura idêntica à do cliente */
+    border-radius: 10px;
+    color: #F3F4F6;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.search-input-universal:focus,
+.stock-search-input:focus {
+    border-color: #6366F1 !important; /* Borda roxa ao clicar */
+    background-color: #111827 !important; /* Fundo escurece sutilmente */
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25) !important; /* O contorno luminoso */
+    outline: none !important;
+}
+
+/* Garante o efeito de cor na lupinha do estoque também */
+.search-container-universal:focus-within .search-icon-universal {
+    color: #6366F1 !important;
+   outline: none;
+}
+
+/* Transição suave para a animação não ser seca */
+.stock-search-input {
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease !important;
 }
 
 .search-box .search-btn {
@@ -1701,4 +1786,598 @@ body {
     background: #6366F1;
     cursor: pointer;
     border: none;
+}
+
+/* ==================== ESTILOS DO PAINEL DE STAFF ==================== */
+.emp-orders-container {
+    width: 100%;
+    max-width: 1050px; /* Faz o painel expandir perfeitamente no Desktop */
+    margin: 0 auto;
+    padding: 10px;
+}
+
+.emp-orders-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px; /* Espaçamento elegante entre os cartões */
+    width: 100%;
+}
+
+.emp-order-card {
+    background-color: #1F2937;
+    border-radius: 12px; /* Cantos mais arredondados e modernos */
+    padding: 20px 24px;  /* Aumenta o tamanho vertical e horizontal no desktop */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #374151;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    gap: 30px; /* BARREIRA DE SEGURANÇA: impede o texto de encostar ou atravessar o status */
+}
+
+.emp-order-card:hover {
+    border-color: #6366F1;
+    background-color: #243042;
+    transform: translateY(-2px); /* Efeito sutil de flutuação ao passar o mouse */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+}
+
+.emp-order-info {
+    flex: 1;
+    min-width: 0; /* Anti-quebra: força textos muito longos a respeitarem o espaço */
+}
+
+.emp-order-info h3 {
+    color: #F3F4F6;
+    font-size: 18px; /* Maior destaque ao número do pedido */
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.emp-order-info p {
+    color: #9CA3AF;
+    font-size: 15px;
+    margin-bottom: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; /* Se o nome do cliente for gigante, põe '...' automaticamente */
+}
+
+.emp-order-time {
+    color: #6B7280;
+    font-size: 13px;
+}
+
+.emp-order-status-area {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-shrink: 0; /* IMPEDE TOTALMENTE que a área do status seja esmagada pelo texto */
+}
+
+/* Emblemas de Status (Badges) */
+.emp-badge {
+    padding: 8px 16px;
+    border-radius: 9999px; /* Formato pílula elegante */
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-align: center;
+    min-width: 150px; /* Garante que todos os status fiquem do mesmo tamanho padrão */
+    display: inline-block;
+}
+
+.emp-badge-pending {
+    background-color: rgba(245, 158, 11, 0.12);
+    color: #F59E0B;
+    border: 1px solid rgba(245, 158, 11, 0.25);
+}
+
+.emp-badge-preparing {
+    background-color: rgba(59, 130, 246, 0.12);
+    color: #3B82F6;
+    border: 1px solid rgba(59, 130, 246, 0.25);
+}
+
+.emp-badge-ready {
+    background-color: rgba(16, 185, 129, 0.12);
+    color: #10B981;
+    border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+.emp-badge-delivered {
+    background-color: rgba(156, 163, 175, 0.1);
+    color: #9CA3AF;
+    border: 1px solid rgba(156, 163, 175, 0.2);
+}
+
+.emp-badge-cancelled {
+    background-color: rgba(239, 68, 68, 0.12);
+    color: #EF4444;
+    border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+/* ==================== ESTILOS DA TELA DE ESTOQUE ==================== */
+.emp-stock-container {
+    width: 100%;
+    max-width: 1050px;
+    margin: 0 auto;
+    padding: 10px;
+}
+
+/* Área do Topo */
+.stock-header-area {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.stock-add-btn {
+    background-color: #6366F1;
+    color: #FFFFFF;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.2s ease;
+}
+
+.stock-add-btn:hover {
+    background-color: #4F46E5;
+}
+
+/* Grid de Indicadores (KPIs) */
+.stock-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-bottom: 25px;
+}
+
+.stock-kpi-card {
+    background-color: #1F2937;
+    border: 1px solid #374151;
+    border-radius: 12px;
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.stock-kpi-card .kpi-label {
+    color: #9CA3AF;
+    font-size: 13px;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.stock-kpi-card .kpi-value {
+    color: #F3F4F6;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.stock-kpi-card.kpi-warning { border-left: 4px solid #F59E0B; }
+.stock-kpi-card.kpi-danger { border-left: 4px solid #EF4444; }
+
+/* Barra de Filtro e Busca */
+.stock-filter-bar {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.stock-search-wrapper {
+    background-color: #1F2937;
+    border: 1px solid #374151;
+    border-radius: 8px;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.stock-search-input {
+    background: transparent;
+    border: none;
+    color: #F3F4F6;
+    font-size: 14px;
+    width: 100%;
+    outline: none;
+}
+
+/* Listagem de Linhas de Produto (Estilo Tabela Moderna) */
+.stock-products-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.stock-product-row {
+    background-color: #1F2937;
+    border: 1px solid #374151;
+    border-radius: 10px;
+    padding: 16px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    transition: all 0.2s ease;
+}
+
+.stock-product-row:hover {
+    border-color: #4B5563;
+    background-color: #243042;
+}
+
+.prod-main-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.prod-sku {
+    font-family: monospace;
+    background-color: #111827;
+    color: #9CA3AF;
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    display: inline-block;
+    margin-bottom: 6px;
+}
+
+.prod-main-info h3 {
+    color: #F3F4F6;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.prod-category {
+    color: #6B7280;
+    font-size: 13px;
+}
+
+/* Lado Direito da Linha */
+.prod-meta-info {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    flex-shrink: 0;
+}
+
+.prod-price {
+    color: #F3F4F6;
+    font-size: 16px;
+    font-weight: 600;
+    min-width: 100px;
+    text-align: right;
+}
+
+.prod-stock-status {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    min-width: 220px;
+    justify-content: flex-end;
+}
+
+.stock-qty {
+    color: #9CA3AF;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Badges do Estoque */
+.stock-status-badge {
+    padding: 5px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    min-width: 110px;
+    text-align: center;
+}
+
+.badge-in-stock {
+    background-color: rgba(16, 185, 129, 0.1);
+    color: #10B981;
+}
+
+.badge-low-stock {
+    background-color: rgba(245, 158, 11, 0.1);
+    color: #F59E0B;
+}
+
+.badge-out-stock {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: #EF4444;
+}
+
+/* Adaptação Responsiva Mobile */
+@media (max-width: 768px) {
+    .stock-product-row {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 16px;
+        gap: 12px;
+    }
+    .prod-meta-info {
+        width: 100%;
+        justify-content: space-between;
+        gap: 10px;
+        border-top: 1px solid #374151;
+        padding-top: 12px;
+    }
+    .prod-price {
+        text-align: left;
+        min-width: auto;
+    }
+    .prod-stock-status {
+        min-width: auto;
+    }
+}
+
+/* --- Estilos do Formulário do Estoque --- */
+.stock-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 16px;
+}
+
+.stock-form-group label {
+    color: #9CA3AF;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.stock-form-group input, 
+.stock-form-group select {
+    background-color: #111827;
+    border: 1px solid #374151;
+    color: #F3F4F6;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.stock-form-group input:focus, 
+.stock-form-group select:focus {
+    border-color: #6366F1;
+}
+
+/* Botão de remover produto (Lixeira) */
+.stock-delete-btn {
+    background: transparent;
+    border: none;
+    color: #EF4444; /* Vermelho */
+    cursor: pointer;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    margin-left: 10px;
+}
+
+.stock-delete-btn:hover {
+    background: rgba(239, 68, 68, 0.15);
+    transform: scale(1.1);
+}
+
+/* ==================== ESTILOS DA TELA DE RELATÓRIOS (STAFF) ==================== */
+.reports-container {
+    width: 100%;
+    max-width: 1050px;
+    margin: 0 auto;
+    padding: 10px;
+}
+
+/* KPIs Superiores */
+.reports-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.report-card {
+    background-color: #1F2937;
+    border: 1px solid #374151;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.report-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.report-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.bg-green { background-color: rgba(16, 185, 129, 0.15); color: #10B981; }
+.bg-blue { background-color: rgba(59, 130, 246, 0.15); color: #3B82F6; }
+.bg-purple { background-color: rgba(139, 92, 246, 0.15); color: #8B5CF6; }
+
+.report-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.report-label {
+    color: #9CA3AF;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+    letter-spacing: 0.5px;
+}
+
+.report-value {
+    color: #F3F4F6;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.report-trend {
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.report-trend.positive { color: #10B981; }
+.report-trend.negative { color: #EF4444; }
+
+/* Grid dos Gráficos */
+.reports-charts-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+}
+
+.chart-card {
+    background-color: #1F2937;
+    border: 1px solid #374151;
+    border-radius: 12px;
+    padding: 24px;
+}
+
+.chart-title {
+    color: #F3F4F6;
+    font-size: 17px;
+    margin-bottom: 25px;
+    font-weight: 600;
+}
+
+/* Gráfico de Barras Horizontal (Feito com CSS) */
+.css-chart {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.chart-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.bar-label {
+    width: 90px;
+    color: #9CA3AF;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.bar-track {
+    flex: 1;
+    height: 12px;
+    background-color: #111827;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.bar-fill {
+    height: 100%;
+    border-radius: 10px;
+    /* Animação que faz a barra encher suavemente quando entra na tela */
+    animation: fillBar 1.2s ease-out forwards;
+}
+
+@keyframes fillBar {
+    from { opacity: 0; transform: scaleX(0); transform-origin: left; }
+    to { opacity: 1; transform: scaleX(1); transform-origin: left; }
+}
+
+.bar-value {
+    width: 45px;
+    color: #F3F4F6;
+    font-size: 14px;
+    text-align: right;
+    font-weight: 600;
+}
+
+/* Gráfico Circular de Meta (Radical Progress CSS) */
+.goal-circle-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 160px;
+}
+
+.radial-progress {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    /* O truque do anel: Pinta 82% com o azul primário e o resto com o cinza escuro */
+    background: conic-gradient(#6366F1 82%, #111827 0);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    box-shadow: 0 0 15px rgba(99, 102, 241, 0.2);
+}
+
+.radial-progress::before {
+    content: "";
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    background-color: #1F2937; /* Cria o buraco central */
+    border-radius: 50%;
+}
+
+.goal-percent {
+    position: relative;
+    color: #F3F4F6;
+    font-size: 32px;
+    font-weight: 700;
+}
+
+.goal-text {
+    position: relative;
+    color: #9CA3AF;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+}
+
+/* Responsividade para o painel não quebrar no celular */
+@media (max-width: 900px) {
+    .reports-charts-row {
+        grid-template-columns: 1fr; /* Põe um gráfico debaixo do outro no mobile */
+    }
 }

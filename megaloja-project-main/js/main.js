@@ -1,6 +1,8 @@
 // --- FUNÇÃO DE NAVEGAÇÃO ENTRE TELAS (SPA) ---
 // --- SISTEMA DE NAVEGAÇÃO DE TELAS (SPA) ---
 // --- SISTEMA DE NAVEGAÇÃO DE TELAS (SPA) ---
+// --- SISTEMA DE NAVEGAÇÃO DE TELAS (SPA) ---
+// --- SISTEMA DE NAVEGAÇÃO DE TELAS (SPA) ---
 function navigateTo(screenId) {
     if (!screenId) return;
 
@@ -21,10 +23,17 @@ function navigateTo(screenId) {
         renderOrders();
     }
 
-    // --- MÁGICA DO MENU HÍBRIDO ---
+    // >>> ADICIONE ESTE NOVO BLOCO AQUI EMBAIXO <<<
+    if (screenId === 'screen-employee-stock' && typeof renderEmployeeStock === 'function') {
+        renderEmployeeStock();
+    }
+
+    // --- SEPARAÇÃO DOS MENUS (CLIENTE VS FUNCIONÁRIO) ---
     const appMenu = document.getElementById('app-menu');
+    const employeeMenu = document.getElementById('employee-menu');
+    const container = document.getElementById('app-container');
     
-    // Lista de telas que NÃO devem mostrar o menu (Telas iniciais de acesso/cadastro)
+    // Lista de telas de login/cadastro (Não mostram nenhum menu)
     const noMenuScreens = [
         'screen-login', 
         'screen-register', 
@@ -34,41 +43,58 @@ function navigateTo(screenId) {
         'screen-employee-login'
     ];
 
-    if (appMenu) {
-        if (noMenuScreens.includes(screenId)) {
-            appMenu.style.display = 'none'; // Esconde o menu
-            document.body.style.justifyContent = 'center'; // Centraliza telas de login
-            if (window.innerWidth >= 768) {
-                const container = document.getElementById('app-container');
-                if (container) {
-                    container.style.marginLeft = '0';
-                    container.style.width = '100%';
-                }
+    // Lista de telas exclusivas do funcionário
+    const employeeScreens = [
+        'screen-employee-orders',
+        'screen-employee-stock',
+        'screen-employee-reports'
+    ];
+
+    // Lógica de exibição dos Menus com base na tela atual
+    if (noMenuScreens.includes(screenId)) {
+        // Telas de Login: Esconde tudo e centraliza na tela
+        if (appMenu) appMenu.style.display = 'none';
+        if (employeeMenu) employeeMenu.style.display = 'none';
+        document.body.style.justifyContent = 'center';
+        if (container) {
+            container.style.marginLeft = '0';
+            container.style.width = '100%';
+        }
+    } else if (employeeScreens.includes(screenId)) {
+        // TELAS DO FUNCIONÁRIO: Mostra apenas o menu do Staff e esconde o do cliente
+        if (appMenu) appMenu.style.display = 'none';
+        if (employeeMenu) employeeMenu.style.display = 'flex';
+        
+        if (window.innerWidth >= 768) {
+            document.body.style.justifyContent = 'flex-start';
+            if (container) {
+                container.style.marginLeft = '240px';
+                container.style.width = 'calc(100vw - 240px)';
+                container.style.maxWidth = 'none';
             }
-        } else {
-            // Exibe o menu nas outras telas
-            appMenu.style.display = 'flex'; 
-            
-            if (window.innerWidth >= 768) {
-                document.body.style.justifyContent = 'flex-start';
-                const container = document.getElementById('app-container');
-                if (container) {
-                    container.style.marginLeft = '240px';
-                    container.style.width = 'calc(100vw - 240px)';
-                    container.style.maxWidth = 'none'; // Libera espaço para a grade de lojas
-                }
+        }
+    } else {
+        // TELAS DO CLIENTE: Mostra apenas o menu do cliente e esconde o do funcionário
+        if (appMenu) appMenu.style.display = 'flex';
+        if (employeeMenu) employeeMenu.style.display = 'none';
+        
+        if (window.innerWidth >= 768) {
+            document.body.style.justifyContent = 'flex-start';
+            if (container) {
+                container.style.marginLeft = '240px';
+                container.style.width = 'calc(100vw - 240px)';
+                container.style.maxWidth = 'none';
             }
         }
     }
 
-    // --- SINCRONIZAÇÃO AUTOMÁTICA DO MENU ---
+    // --- SINCRONIZAÇÃO AUTOMÁTICA DO MENU ATIVO ---
     try {
         const menuItems = document.querySelectorAll('.menu-item'); 
         menuItems.forEach(item => {
             item.classList.remove('active');
         });
 
-        // Só tenta procurar e acender o botão se não for uma tela de login
         if (!noMenuScreens.includes(screenId)) {
             const activeButtons = document.querySelectorAll(`.menu-item[onclick*="${screenId}"]`);
             activeButtons.forEach(btn => {
@@ -148,6 +174,23 @@ function handleLogin(event) {
     navigateTo('screen-stores');
 }
 
+// --- VALIDAÇÃO E LOGIN DO FUNCIONÁRIO ---
+// --- VALIDAÇÃO E LOGIN DO FUNCIONÁRIO ---
+function handleEmployeeLogin(event) {
+    event.preventDefault();
+    
+    // Limpa o cache antigo usando o escopo seguro para forçar uma nova carga coerente
+    window.employeeStockCache = null;
+    
+    navigateTo('screen-employee-orders');
+}
+
+// --- SISTEMA DE FILTRO/PESQUISA DE LOJAS ---
+// ==================== SISTEMA DE BUSCA DO CLIENTE ====================
+
+/**
+ * Filtra as lojas da tela inicial por Nome ou Segmento
+ */
 // --- SISTEMA DE FILTRO/PESQUISA DE LOJAS ---
 function handleStoreSearch() {
     // 1. Pega o input de texto dentro da caixinha de busca
@@ -169,9 +212,37 @@ function handleStoreSearch() {
 
         // Se o termo pesquisado estiver no nome OU no endereço, exibe. Senão, esconde.
         if (storeName.includes(searchTerm) || storeAddress.includes(searchTerm)) {
-            card.style.display = 'flex'; 
+            card.style.display = ''; // <--- CORREÇÃO: Usa vazio para herdar o layout correto do CSS e não quebrar o espaçamento!
         } else {
             card.style.display = 'none'; 
+        }
+    });
+}
+
+/**
+ * Filtra os produtos dentro da loja aberta por Nome ou Categoria
+ */
+/**
+ * Filtra os produtos da loja selecionada por Nome ou Categoria (Fluxo do Cliente)
+ */
+function handleProductSearch() {
+    const searchInput = document.querySelector('.product-search-input');
+    if (!searchInput) return;
+
+    const normalize = (text) => text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+    const searchTerm = normalize(searchInput.value);
+
+    // Seleciona os cards de produtos do cliente
+    const productCards = document.querySelectorAll('.product-card');
+    
+    productCards.forEach(card => {
+        const nameEl = card.querySelector('.product-name') || card.querySelector('h3');
+        const productName = nameEl ? normalize(nameEl.textContent) : '';
+
+        if (productName.includes(searchTerm)) {
+            card.style.display = ''; // Mantém o layout original do CSS (grid/flex) sem bugar!
+        } else {
+            card.style.display = 'none';
         }
     });
 }
@@ -394,6 +465,9 @@ function assignRandomStockLevels() {
 /**
  * Core unificado: Valida se o produto pertence à loja selecionada E ao termo digitado
  */
+/**
+ * Core unificado: Valida se o produto pertence à loja selecionada E ao termo digitado
+ */
 function applyProductFilters() {
     const searchInput = document.querySelector('#screen-stock .search-box input');
     
@@ -419,7 +493,7 @@ function applyProductFilters() {
         const matchesSearch = productName.includes(searchTerm);
 
         if (matchesStore && matchesSearch) {
-            card.style.display = 'flex';
+            card.style.display = ''; // <--- CORREÇÃO: Mantém o layout nativo do card de produto intacto!
         } else {
             card.style.display = 'none';
         }
@@ -1189,4 +1263,325 @@ function generateOrderQRCode(orderId, containerId, btnId) {
     if (btn) {
         btn.style.display = 'none';
     }
+}
+
+// ==================== GERENCIAMENTO DINÂMICO DE ESTOQUE (STAFF) ====================
+
+// Cache de sessão para persistência visual das abas
+// ==================== GERENCIAMENTO DINÂMICO DE ESTOQUE (STAFF) ====================
+
+// Registra a memória de sessão de forma segura e imune a erros de re-declaração por 'let'
+if (typeof window.employeeStockCache === 'undefined') {
+    window.employeeStockCache = null;
+}
+
+/**
+ * Mapeia os produtos reais e gera o painel baseando-se estritamente na regra de quantidade
+ */
+// ==================== GERENCIAMENTO DINÂMICO DE ESTOQUE (STAFF) ====================
+
+// Registra a memória de sessão de forma segura e imune a erros de re-declaração por 'let'
+if (typeof window.employeeStockCache === 'undefined') {
+    window.employeeStockCache = null;
+}
+
+/**
+ * Mapeia os produtos reais e gera o painel baseando-se estritamente na regra de quantidade
+ */
+function renderEmployeeStock() {
+    const productListContainer = document.querySelector('.stock-products-list');
+    if (!productListContainer) return;
+
+    // === PASSO A: SE NÃO HOUVER CACHE (PRIMEIRO ACESSO DO LOGIN), CARREGA O CATÁLOGO ===
+    if (window.employeeStockCache === null) {
+        window.employeeStockCache = [];
+        const clientProducts = document.querySelectorAll('.product-card');
+        
+        let idx = 0;
+        clientProducts.forEach(card => {
+            const nameEl = card.querySelector('.product-name');
+            const priceEl = card.querySelector('.product-price');
+            if (!nameEl) return;
+
+            const name = nameEl.textContent.trim();
+            const price = priceEl ? priceEl.textContent.trim() : 'R$ 0,00';
+            const category = card.getAttribute('data-category') || 'Geral';
+
+            // Evita duplicados na carga do catálogo do cliente
+            const exists = window.employeeStockCache.some(p => p.name === name);
+            if (!exists) {
+                const rand = Math.random();
+                let qty = 0;
+
+                // Geração equilibrada inicial para teste visual
+                if (rand < 0.12) {
+                    qty = 0; 
+                } else if (rand < 0.32) {
+                    qty = Math.floor(Math.random() * 5) + 1; // 1 a 5 unidades
+                } else {
+                    qty = Math.floor(Math.random() * 85) + 6; // 6 ou mais unidades
+                }
+
+                // Automação de Regra de Status
+                let statusText = 'Disponível';
+                let badgeClass = 'badge-in-stock';
+
+                if (qty === 0) {
+                    statusText = 'Esgotado';
+                    badgeClass = 'badge-out-stock';
+                } else if (qty <= 5) {
+                    statusText = 'Estoque Baixo';
+                    badgeClass = 'badge-low-stock';
+                }
+
+                window.employeeStockCache.push({
+                    sku: `SKU-${1000 + (idx * 13)}`,
+                    name,
+                    category,
+                    price,
+                    qty,
+                    badgeClass,
+                    statusText
+                });
+                idx++;
+            }
+        });
+    }
+
+    // === PASSO B: LIMPA O CONTAINER E RENDERIZA A LISTAGEM COM BASE NO CACHE SEGURO ===
+    productListContainer.innerHTML = ''; // IMPORTANTE: Limpa antes de renderizar
+    
+    let totalItems = window.employeeStockCache.length;
+    let baixoEstoqueCount = 0;
+    let esgotadoCount = 0;
+
+    window.employeeStockCache.forEach(prod => {
+        if (prod.qty === 0) esgotadoCount++;
+        else if (prod.qty <= 5) baixoEstoqueCount++;
+
+        // A linha agora tem eventos de clique no Nome e no Preço para abrir a edição
+        productListContainer.innerHTML += `
+            <div class="stock-product-row" style="position: relative; padding-right: 45px;">
+                <div class="prod-main-info" onclick="openEditProductModal('${prod.sku}')" style="cursor: pointer;" title="Clique para editar">
+                    <span class="prod-sku">${prod.sku}</span>
+                    <h3>${prod.name}</h3>
+                    <span class="prod-category">${prod.category}</span>
+                </div>
+                <div class="prod-meta-info">
+                    <div class="prod-price" onclick="openEditProductModal('${prod.sku}')" style="cursor: pointer;" title="Clique para editar">${prod.price}</div>
+                    <div class="prod-stock-status">
+                        <span class="stock-qty" ${prod.qty === 0 ? 'style="color: #EF4444;"' : ''}>${prod.qty} un.</span>
+                        <span class="stock-status-badge ${prod.badgeClass}">${prod.statusText}</span>
+                    </div>
+                </div>
+                
+                <button class="stock-delete-btn" onclick="removeEmployeeStockItem('${prod.sku}')" title="Remover Produto" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); margin: 0; padding: 8px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    </svg>
+                </button>
+            </div>
+        `;
+    });
+
+    // Atualiza os indicadores superiores
+    const kpiValues = document.querySelectorAll('.stock-kpi-card .kpi-value');
+    if (kpiValues.length >= 3) {
+        kpiValues[0].textContent = totalItems;
+        kpiValues[1].innerHTML = `${baixoEstoqueCount} <small style="font-size: 12px; font-weight: normal; color: #F59E0B;">itens</small>`;
+        kpiValues[2].innerHTML = `${esgotadoCount} <small style="font-size: 12px; font-weight: normal; color: #EF4444;">itens</small>`;
+    }
+}
+
+/**
+ * Abre o modal de cadastro
+ */
+function openAddProductModal() {
+    const modal = document.getElementById('stock-add-modal');
+    if (modal) modal.style.display = 'flex';
+}
+
+/**
+ * Fecha o modal de forma limpa e segura
+ */
+function closeAddProductModal() {
+    const modal = document.getElementById('stock-add-modal');
+    if (modal) {
+        modal.style.display = 'none';
+        const n = document.getElementById('stock-new-name');
+        const p = document.getElementById('stock-new-price');
+        const q = document.getElementById('stock-new-qty');
+        if (n) n.value = '';
+        if (p) p.value = '';
+        if (q) q.value = '';
+    }
+}
+
+/**
+ * Processa a criação e calcula o status matematicamente sem falhas
+ */
+function handleCreateProduct(event) {
+    if (event) event.preventDefault(); // Impede o recarregamento da página
+
+    const nameEl = document.getElementById('stock-new-name');
+    const priceEl = document.getElementById('stock-new-price');
+    const qtyEl = document.getElementById('stock-new-qty');
+
+    // Validação defensiva: se algum campo sumiu do HTML, avisa o desenvolvedor no console
+    if (!nameEl || !priceEl || !qtyEl) {
+        console.error("Erro Crítico: Campos do formulário não foram encontrados no HTML.");
+        return;
+    }
+
+    const name = nameEl.value.trim();
+    let price = priceEl.value.trim();
+    let qty = parseInt(qtyEl.value);
+
+    if (!name || !price) return;
+    if (isNaN(qty) || qty < 0) qty = 0;
+    if (!price.toUpperCase().includes('R$')) price = `R$ ${price}`;
+
+    // === PROCESSAMENTO AUTOMÁTICO DO STATUS ===
+    let statusText = 'Disponível';
+    let badgeClass = 'badge-in-stock';
+
+    if (qty === 0) {
+        statusText = 'Esgotado';
+        badgeClass = 'badge-out-stock';
+    } else if (qty <= 5) {
+        statusText = 'Estoque Baixo';
+        badgeClass = 'badge-low-stock';
+    }
+
+    // Inicialização forçada se necessário
+    if (window.employeeStockCache === null) {
+        window.employeeStockCache = [];
+    }
+
+    const sku = `SKU-${2000 + (window.employeeStockCache.length + 1)}`;
+
+    // Injeta o novo produto no topo da memória da sessão
+    window.employeeStockCache.unshift({
+        sku,
+        name,
+        category: 'Entrada Manual',
+        price,
+        qty,
+        badgeClass,
+        statusText
+    });
+
+    // Fecha a janela e atualiza o ecrã instantaneamente
+    closeAddProductModal();
+    renderEmployeeStock();
+}
+
+/**
+ * Filtro de pesquisa operacional por SKU, Nome ou Categoria
+ */
+function handleEmployeeStockSearch() {
+    const searchInput = document.querySelector('.stock-search-input');
+    if (!searchInput) return;
+    
+    const normalize = (text) => text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+    const searchTerm = normalize(searchInput.value);
+    
+    const rows = document.querySelectorAll('.stock-product-row');
+    rows.forEach(row => {
+        const name = normalize(row.querySelector('h3').textContent);
+        const category = normalize(row.querySelector('.prod-category').textContent);
+        const sku = normalize(row.querySelector('.prod-sku').textContent);
+        
+        if (name.includes(searchTerm) || category.includes(searchTerm) || sku.includes(searchTerm)) {
+            row.style.display = 'flex';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+}
+
+/**
+ * Remove um item específico do estoque na sessão atual
+ */
+function removeEmployeeStockItem(sku) {
+    if (!window.employeeStockCache) return;
+    
+    // Filtra o array, mantendo apenas os produtos que NÃO têm o SKU clicado
+    window.employeeStockCache = window.employeeStockCache.filter(item => item.sku !== sku);
+    
+    // Atualiza a tela imediatamente (isso fará o produto sumir e os KPIs do topo serem recalculados)
+    renderEmployeeStock();
+}
+
+// ==================== LÓGICA DE EDIÇÃO DE PRODUTO ====================
+
+// Variável para lembrar qual produto estamos editando no momento
+let currentEditSku = null;
+
+/**
+ * Abre o modal e preenche os campos com os dados atuais do produto
+ */
+function openEditProductModal(sku) {
+    if (!window.employeeStockCache) return;
+    
+    // Procura o produto exato na memória
+    const product = window.employeeStockCache.find(p => p.sku === sku);
+    if (!product) return;
+
+    // Guarda o SKU para sabermos quem atualizar depois
+    currentEditSku = sku;
+    
+    // Preenche os campos do modal com os dados existentes
+    document.getElementById('stock-edit-name').value = product.name;
+    document.getElementById('stock-edit-price').value = product.price;
+
+    const modal = document.getElementById('stock-edit-modal');
+    if (modal) modal.style.display = 'flex';
+}
+
+/**
+ * Fecha o modal de edição e limpa a memória temporária
+ */
+function closeEditProductModal() {
+    const modal = document.getElementById('stock-edit-modal');
+    if (modal) {
+        modal.style.display = 'none';
+        document.getElementById('stock-edit-name').value = '';
+        document.getElementById('stock-edit-price').value = '';
+        currentEditSku = null; // Zera a referência
+    }
+}
+
+/**
+ * Guarda as alterações feitas no produto e atualiza a tela
+ */
+function handleEditProduct(event) {
+    if (event) event.preventDefault();
+
+    if (!currentEditSku || !window.employeeStockCache) return;
+
+    const nameEl = document.getElementById('stock-edit-name');
+    const priceEl = document.getElementById('stock-edit-price');
+
+    if (!nameEl || !priceEl) return;
+
+    const newName = nameEl.value.trim();
+    let newPrice = priceEl.value.trim();
+
+    if (!newName || !newPrice) return;
+    
+    // Garante que o R$ esteja lá, por precaução
+    if (!newPrice.toUpperCase().includes('R$')) newPrice = `R$ ${newPrice}`;
+
+    // Acha a posição do produto na lista global e atualiza os dados
+    const productIndex = window.employeeStockCache.findIndex(p => p.sku === currentEditSku);
+    if (productIndex !== -1) {
+        window.employeeStockCache[productIndex].name = newName;
+        window.employeeStockCache[productIndex].price = newPrice;
+    }
+
+    // Fecha a janela e atualiza o ecrã instantaneamente
+    closeEditProductModal();
+    renderEmployeeStock();
 }
