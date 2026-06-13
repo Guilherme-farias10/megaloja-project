@@ -1451,7 +1451,7 @@
             <h2 class="modal-title" style="color: #10B981; margin-bottom: 10px; font-size: 1.4rem;">Pedido Confirmado!</h2>
             <p id="order-success-message" class="modal-message" style="margin-bottom: 25px; color: #9CA3AF; font-size: 1rem;"></p>
             
-            <button onclick="closeOrderSuccessModal()" class="primary-btn" style="width: 100%; font-size: 1.1rem; padding: 12px;">Ver meus pedidos</button>
+            <button id="order-success-btn" onclick="closeOrderSuccessModal()" class="primary-btn" style="width: 100%; font-size: 1.1rem; padding: 12px;">Ver meus pedidos</button>
         </div>
     </div>
 
@@ -1503,11 +1503,11 @@
         </div>
     </div>
 
-    <div id="stock-edit-modal" class="error-modal" style="display: none; align-items: center; justify-content: center;">
+        <div id="stock-edit-modal" class="error-modal" style="display: none; align-items: center; justify-content: center;">
         <div class="modal-content" style="max-width: 450px; width: 90%; text-align: left; background-color: #1F2937; border: 1px solid #374151;">
             
             <h2 class="modal-title" style="color: #F3F4F6; font-size: 1.3rem; margin-bottom: 5px;">Editar Produto</h2>
-            <p style="color: #9CA3AF; font-size: 13px; margin-bottom: 20px;">Altere o nome ou o preço do produto selecionado.</p>
+            <p style="color: #9CA3AF; font-size: 13px; margin-bottom: 20px;">Altere os dados do produto selecionado.</p>
             
             <form onsubmit="handleEditProduct(event)">
                 <div class="stock-form-group">
@@ -1518,6 +1518,11 @@
                 <div class="stock-form-group">
                     <label>Preço de Venda</label>
                     <input type="text" id="stock-edit-price" inputmode="numeric" oninput="this.value = this.value.replace(/\D/g, '') ? (parseInt(this.value.replace(/\D/g, ''))/100).toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'}) : '';" required>
+                </div>
+
+                <div class="stock-form-group">
+                    <label>Quantidade em Estoque</label>
+                    <input type="text" id="stock-edit-qty" placeholder="Ex: 15" inputmode="numeric" oninput="this.value = this.value.replace(/\D/g, '')" required>
                 </div>
 
                 <div style="display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 25px;">

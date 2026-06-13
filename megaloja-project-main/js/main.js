@@ -109,7 +109,6 @@ function navigateTo(screenId) {
     }
 }
 
-
 function handleMenuClick(element, targetScreenId) {
     
     const menuItems = document.querySelectorAll('.menu-item');
@@ -633,37 +632,57 @@ function selectStore(storeName) {
     
     const searchInput = document.querySelector('#screen-stock .search-box input');
     if (searchInput) searchInput.value = "";
-    assignRandomStockLevels();
+    refreshProductStockBadges();
     applyProductFilters();
     navigateTo('screen-stock');
 }
 
-window.stockCache = window.stockCache || {};
+// ============================================================
+// BANCO DE ESTOQUE COMPARTILHADO (cliente + funcionário)
+// Quantidades fixas, únicas por produto (independente da loja)
+// ============================================================
+window.stockDatabase = window.stockDatabase || null;
 
-function assignRandomStockLevels() {
+function initializeStockDatabase() {
+    if (window.stockDatabase) return; // Já foi inicializado
+
+    window.stockDatabase = {
+        'Monitor Gamer 24" LED FHD': 25,
+        'Cafeteira Elétrica Inox': 12,
+        'Smartphone 128GB Ultra': 8,
+        'Fone Bluetooth Noise Cancelling': 3,
+        'Teclado Mecânico RGB': 18,
+        'Notebook Intel i5 16GB RAM': 6,
+        'Liquidificador Turbo 1000W': 0,
+        'Smart TV 4K 50" Crystal': 10,
+        'Carregador Rápido GaN 65W': 4,
+        'Console PlayStation 5 Slim': 2
+    };
+}
+
+function getStockStatus(productName) {
+    const key = findStockKey(productName);
+    if (!key) return { text: 'Indisponível', color: '#EF4444', bg: 'rgba(239, 68, 68, 0.15)', state: 'out' };
+    const qty = window.stockDatabase[key];
+    if (qty === 0) return { text: 'Indisponível', color: '#EF4444', bg: 'rgba(239, 68, 68, 0.15)', state: 'out' };
+    if (qty <= 5) return { text: 'Baixo Estoque', color: '#F59E0B', bg: 'rgba(245, 158, 11, 0.15)', state: 'in' };
+    return { text: 'Disponível', color: '#10B981', bg: 'rgba(16, 185, 129, 0.15)', state: 'in' };
+}
+
+function refreshProductStockBadges() {
+    initializeStockDatabase();
     const productCards = document.querySelectorAll('.product-card');
 
     productCards.forEach(card => {
         const nameElement = card.querySelector('.product-name');
         if (!nameElement) return;
         const productName = nameElement.textContent.trim();
-        const cacheKey = currentSelectedStore + "_" + productName;
+
         const existingBadge = card.querySelector('.stock-badge');
         if (existingBadge) existingBadge.remove();
 
-        if (!window.stockCache[cacheKey]) {
-            const rand = Math.random();
-            if (rand < 0.60) {
-                window.stockCache[cacheKey] = { text: 'Disponível', color: '#10B981', bg: 'rgba(16, 185, 129, 0.15)', state: 'in' };
-            } else if (rand < 0.85) {
-                window.stockCache[cacheKey] = { text: 'Baixo Estoque', color: '#F59E0B', bg: 'rgba(245, 158, 11, 0.15)', state: 'in' };
-            } else {
-                window.stockCache[cacheKey] = { text: 'Indisponível', color: '#EF4444', bg: 'rgba(239, 68, 68, 0.15)', state: 'out' };
-            }
-        }
+        const stockInfo = getStockStatus(productName);
 
-        const stockInfo = window.stockCache[cacheKey];
-        
         const badge = document.createElement('span');
         badge.className = 'stock-badge';
         badge.style.display = 'inline-block';
@@ -680,18 +699,18 @@ function assignRandomStockLevels() {
             nameElement.parentElement.appendChild(badge);
         }
 
-        const addBtn = card.querySelector('button');
+        const addBtn = card.querySelector('.add-product-btn');
         if (addBtn) {
             if (stockInfo.state === 'out') {
                 addBtn.style.opacity = '0.5';
                 addBtn.style.cursor = 'not-allowed';
-                addBtn.textContent = 'Esgotado';
-                card.setAttribute('data-stock', 'out'); 
+                addBtn.innerHTML = 'Esgotado';
+                card.setAttribute('data-stock', 'out');
             } else {
                 addBtn.style.opacity = '1';
                 addBtn.style.cursor = 'pointer';
-                addBtn.textContent = 'Adicionar'; 
-                card.setAttribute('data-stock', 'in'); 
+                addBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>`;
+                card.setAttribute('data-stock', 'in');
             }
         }
     });
@@ -721,6 +740,29 @@ function applyProductFilters() {
             card.style.display = 'none';
         }
     });
+}
+
+function normalizeProductName(name) {
+    // Remove aspas, apóstrofos, duplicatas e normaliza para match
+    return name.replace(/[''"”'´`\u2019\u2018]/g, '').replace(/\s+/g, ' ').trim().toLowerCase();
+}
+
+function findStockKey(productName) {
+    initializeStockDatabase();
+    const normalized = normalizeProductName(productName);
+    for (const key of Object.keys(window.stockDatabase)) {
+        if (normalizeProductName(key) === normalized) {
+            return key;
+        }
+    }
+    return null;
+}
+
+function getAvailableStock(productName) {
+    initializeStockDatabase();
+    const key = findStockKey(productName);
+    if (!key) return 0;
+    return window.stockDatabase[key];
 }
 
 function addToOrder(productName) {
@@ -758,6 +800,24 @@ function addToOrder(productName) {
             showModal(`Puxa! O produto "${productName}" está Indisponível no momento nesta filial.`);
         } else {
             alert(`Puxa! O produto "${productName}" está Indisponível no momento nesta filial.`);
+        }
+        return;
+    }
+
+    // Verifica o estoque disponível no banco compartilhado
+    initializeStockDatabase();
+    const availableQty = getAvailableStock(productName);
+    
+    // Calcula quantos já estão no carrinho
+    const inCartQty = (Array.isArray(cart) ? cart : [])
+        .filter(it => it && it.name === productName && it.store === currentSelectedStore)
+        .reduce((sum, it) => sum + (it.quantity || 1), 0);
+
+    if (inCartQty >= availableQty) {
+        if (typeof showModal === "function") {
+            showModal(`Desculpe! Não há mais estoque disponível de "${productName}". Apenas ${availableQty} unidade(s) em estoque.`);
+        } else {
+            alert(`Desculpe! Não há mais estoque disponível de "${productName}".`);
         }
         return;
     }
@@ -943,7 +1003,21 @@ function toggleCartItemChecked(cartIndex, isChecked) {
 
 function increaseCartQuantity(cartIndex) {
     if (typeof cartIndex !== 'number' || !cart[cartIndex]) return;
-    cart[cartIndex].quantity = (cart[cartIndex].quantity || 1) + 1;
+    
+    const item = cart[cartIndex];
+    const availableQty = getAvailableStock(item.name);
+    const newQty = (item.quantity || 1) + 1;
+    
+    if (newQty > availableQty) {
+        if (typeof showModal === "function") {
+            showModal(`Desculpe! Não há estoque suficiente de "${item.name}". Apenas ${availableQty} unidade(s) disponíveis.`);
+        } else {
+            alert(`Desculpe! Não há estoque suficiente de "${item.name}".`);
+        }
+        return;
+    }
+    
+    item.quantity = newQty;
     renderCart();
 }
 
@@ -1326,6 +1400,33 @@ function confirmFinalOrder() {
         addOrderNotification(generatedOrderId, storeName);
     }, 8000);
 
+    // Decrementa o estoque no banco compartilhado
+    initializeStockDatabase();
+    checkoutItems.forEach(item => {
+        const dbKey = findStockKey(item.name);
+        if (dbKey && window.stockDatabase[dbKey] !== undefined) {
+            const qtySold = item.quantity || 1;
+            window.stockDatabase[dbKey] = Math.max(0, window.stockDatabase[dbKey] - qtySold);
+            // Atualiza também no cache do funcionário se existir
+            if (window.employeeStockCache) {
+                const empProd = window.employeeStockCache.find(p => p.name === name);
+                if (empProd) {
+                    empProd.qty = window.stockDatabase[name];
+                    if (empProd.qty === 0) {
+                        empProd.statusText = 'Esgotado';
+                        empProd.badgeClass = 'badge-out-stock';
+                    } else if (empProd.qty <= 5) {
+                        empProd.statusText = 'Estoque Baixo';
+                        empProd.badgeClass = 'badge-low-stock';
+                    } else {
+                        empProd.statusText = 'Disponível';
+                        empProd.badgeClass = 'badge-in-stock';
+                    }
+                }
+            }
+        }
+    });
+
     // Remove SOMENTE os itens comprados (marcados no checkout) do carrinho,
     // mantendo os não selecionados.
     const checkoutKeys = new Set(
@@ -1367,9 +1468,14 @@ function confirmFinalOrder() {
 function showOrderSuccessModal(message) {
     const modal = document.getElementById('order-success-modal');
     const msgEl = document.getElementById('order-success-message');
+    const btnEl = document.getElementById('order-success-btn');
     
     if (modal && msgEl) {
         msgEl.textContent = message;
+        // Altera o texto do botão conforme o fluxo
+        if (btnEl) {
+            btnEl.textContent = window._employeeModalPending ? 'Ver pedidos' : 'Ver meus pedidos';
+        }
         modal.classList.add('active-modal');
     }
 }
@@ -1636,61 +1742,58 @@ if (typeof window.employeeStockCache === 'undefined') {
 
 
 
+function syncEmployeeCacheWithDatabase() {
+    initializeStockDatabase();
+
+    // Se o cache do funcionário ainda não foi criado, cria a partir do banco
+    if (window.employeeStockCache === null) {
+        window.employeeStockCache = [];
+    }
+
+    const existingNames = new Set(window.employeeStockCache.map(p => p.name));
+
+    // Adiciona produtos do stockDatabase que ainda não estão no cache
+    const clientProducts = document.querySelectorAll('.product-card');
+    let idx = 0;
+
+    Object.keys(window.stockDatabase).forEach(name => {
+        if (existingNames.has(name)) return;
+
+        const qty = window.stockDatabase[name];
+        
+        let statusText = 'Disponível';
+        let badgeClass = 'badge-in-stock';
+        if (qty === 0) {
+            statusText = 'Esgotado';
+            badgeClass = 'badge-out-stock';
+        } else if (qty <= 5) {
+            statusText = 'Estoque Baixo';
+            badgeClass = 'badge-low-stock';
+        }
+
+        const card = Array.from(clientProducts).find(c => {
+            const el = c.querySelector('.product-name');
+            return el && el.textContent.trim() === name;
+        });
+
+        const priceEl = card ? card.querySelector('.product-price') : null;
+        const price = priceEl ? priceEl.textContent.trim() : 'R$ 0,00';
+        const category = card ? (card.getAttribute('data-category') || 'Geral') : 'Geral';
+        const sku = `SKU-${1000 + (idx * 13)}`;
+
+        window.employeeStockCache.push({
+            sku, name, category, price, qty, badgeClass, statusText
+        });
+        idx++;
+    });
+}
+
 function renderEmployeeStock() {
     const productListContainer = document.querySelector('.stock-products-list');
     if (!productListContainer) return;
 
-    if (window.employeeStockCache === null) {
-        window.employeeStockCache = [];
-        const clientProducts = document.querySelectorAll('.product-card');
-        
-        let idx = 0;
-        clientProducts.forEach(card => {
-            const nameEl = card.querySelector('.product-name');
-            const priceEl = card.querySelector('.product-price');
-            if (!nameEl) return;
-
-            const name = nameEl.textContent.trim();
-            const price = priceEl ? priceEl.textContent.trim() : 'R$ 0,00';
-            const category = card.getAttribute('data-category') || 'Geral';
-  
-            const exists = window.employeeStockCache.some(p => p.name === name);
-            if (!exists) {
-                const rand = Math.random();
-                let qty = 0;
-      
-                if (rand < 0.12) {
-                    qty = 0; 
-                } else if (rand < 0.32) {
-                    qty = Math.floor(Math.random() * 5) + 1; 
-                } else {
-                    qty = Math.floor(Math.random() * 85) + 6; 
-                }
-      
-                let statusText = 'Disponível';
-                let badgeClass = 'badge-in-stock';
-
-                if (qty === 0) {
-                    statusText = 'Esgotado';
-                    badgeClass = 'badge-out-stock';
-                } else if (qty <= 5) {
-                    statusText = 'Estoque Baixo';
-                    badgeClass = 'badge-low-stock';
-                }
-
-                window.employeeStockCache.push({
-                    sku: `SKU-${1000 + (idx * 13)}`,
-                    name,
-                    category,
-                    price,
-                    qty,
-                    badgeClass,
-                    statusText
-                });
-                idx++;
-            }
-        });
-    }
+    // Sincroniza com o banco de dados compartilhado
+    syncEmployeeCacheWithDatabase();
 
     productListContainer.innerHTML = ''; 
     
@@ -1829,6 +1932,10 @@ function handleEmployeeStockSearch() {
 
 function removeEmployeeStockItem(sku) {
     if (!window.employeeStockCache) return;
+    const removedItem = window.employeeStockCache.find(item => item.sku === sku);
+    if (removedItem && window.stockDatabase && window.stockDatabase[removedItem.name] !== undefined) {
+        delete window.stockDatabase[removedItem.name];
+    }
     window.employeeStockCache = window.employeeStockCache.filter(item => item.sku !== sku);
     renderEmployeeStock();
 }
@@ -1842,6 +1949,7 @@ function openEditProductModal(sku) {
     currentEditSku = sku;
     document.getElementById('stock-edit-name').value = product.name;
     document.getElementById('stock-edit-price').value = product.price;
+    document.getElementById('stock-edit-qty').value = product.qty;
     const modal = document.getElementById('stock-edit-modal');
     if (modal) modal.style.display = 'flex';
 }
@@ -1852,6 +1960,8 @@ function closeEditProductModal() {
         modal.style.display = 'none';
         document.getElementById('stock-edit-name').value = '';
         document.getElementById('stock-edit-price').value = '';
+        const qtyEl = document.getElementById('stock-edit-qty');
+        if (qtyEl) qtyEl.value = '';
         currentEditSku = null; 
     }
 }
@@ -1863,21 +1973,42 @@ function handleEditProduct(event) {
 
     const nameEl = document.getElementById('stock-edit-name');
     const priceEl = document.getElementById('stock-edit-price');
+    const qtyEl = document.getElementById('stock-edit-qty');
 
     if (!nameEl || !priceEl) return;
 
     const newName = nameEl.value.trim();
     let newPrice = priceEl.value.trim();
+    let newQty = qtyEl ? parseInt(qtyEl.value) : undefined;
 
     if (!newName || !newPrice) return;
-    
+    if (newQty !== undefined && (isNaN(newQty) || newQty < 0)) newQty = 0;
     
     if (!newPrice.toUpperCase().includes('R$')) newPrice = `R$ ${newPrice}`;
 
     const productIndex = window.employeeStockCache.findIndex(p => p.sku === currentEditSku);
     if (productIndex !== -1) {
-        window.employeeStockCache[productIndex].name = newName;
-        window.employeeStockCache[productIndex].price = newPrice;
+        const prod = window.employeeStockCache[productIndex];
+        prod.name = newName;
+        prod.price = newPrice;
+        if (newQty !== undefined) {
+            prod.qty = newQty;
+            // Atualiza o banco compartilhado
+            initializeStockDatabase();
+            window.stockDatabase[prod.name] = newQty;
+            
+            // Atualiza status
+            if (newQty === 0) {
+                prod.statusText = 'Esgotado';
+                prod.badgeClass = 'badge-out-stock';
+            } else if (newQty <= 5) {
+                prod.statusText = 'Estoque Baixo';
+                prod.badgeClass = 'badge-low-stock';
+            } else {
+                prod.statusText = 'Disponível';
+                prod.badgeClass = 'badge-in-stock';
+            }
+        }
     }
 
     closeEditProductModal();
